@@ -7,6 +7,23 @@ from django import forms
 from .models import Category, Customer, Product, Order
 from .forms import SignUpForm
 
+#Product by category
+def category(request, cat):
+    #Replace Hyphens with spaces
+    cat = cat.replace('-',' ')
+    #Grab the category from the url
+    try:
+        #Look up the category
+        category = Category.objects.get(name=cat)
+        products = Product.objects.filter(category=category)
+        return render(request,'store/category.html', {
+            'products': products,
+            'category': category
+        })
+    except:
+        messages.success(request, ("Category doesnt exist"))
+        return redirect('home')
+
 
 def product(request, pk):
     product = Product.objects.get(id=pk)
